@@ -1,5 +1,12 @@
 import { useState } from 'react'
 
+
+const Button = ({ handleClick, text }) => {
+  return (
+    <button onClick={handleClick}>{text}</button>
+  )
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -11,17 +18,32 @@ const App = () => {
     'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
     'The only way to go fast, is to go well.'
   ]
-// debugger
-  const [selected, setSelected] = useState(0)
+  // debugger
 
-  const anecodeIndexGenerator = () => setSelected(Math.floor(Math.random() * (anecdotes.length)))
+  const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
+  // debugger
+  const anecodeIndexGenerator = () => {
+    setSelected(Math.floor(Math.random() * (anecdotes.length)))
+    //   console.log(selected)
+  }
+
+  const handleVote = () => {
+    const newVotes = [...votes]
+    newVotes[selected] += 1
+    console.log(newVotes)
+    setVotes(newVotes)
+    console.log(votes)
+  }
 
   return (
     <>
       <div>
         {anecdotes[selected]}
       </div>
-      <button onClick={anecodeIndexGenerator}>next anecdote</button>
+      <Button handleClick={handleVote} text="Vote" />
+      <Button handleClick={anecodeIndexGenerator} text="Next anecdote" />
+      <p>has {votes[selected]} votes</p>
     </>
   )
 }
