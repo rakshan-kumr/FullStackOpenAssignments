@@ -31,19 +31,23 @@ const App = () => {
   const handleVote = () => {
     const newVotes = [...votes]
     newVotes[selected] += 1
-    console.log(newVotes)
+    // console.log(newVotes)
     setVotes(newVotes)
-    console.log(votes)
+    // console.log(votes)
   }
 
   return (
     <>
+    <h1>Anecdote of the day</h1>
       <div>
         {anecdotes[selected]}
       </div>
       <Button handleClick={handleVote} text="Vote" />
       <Button handleClick={anecodeIndexGenerator} text="Next anecdote" />
       <p>has {votes[selected]} votes</p>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[votes.indexOf(Math.max(...votes))]}</p>
+
     </>
   )
 }
