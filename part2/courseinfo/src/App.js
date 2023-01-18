@@ -1,4 +1,4 @@
-import Courses from "./components/Courses"
+import Course from "./components/Courses"
 
 const App = () => {
   const curriculum = "Web Development Curriculum"
@@ -47,7 +47,7 @@ const App = () => {
     }
   ]
   // console.log(courses)
-  return <Courses courses={courses} curriculum={curriculum} />
+  return <Course courses={courses} curriculum={curriculum} />
 }
 
 export default App

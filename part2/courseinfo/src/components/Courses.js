@@ -25,7 +25,7 @@ const Total = ({ parts }) => {
   )
 }
 
-const Courses = ({ courses, curriculum }) => {
+const Course = ({ courses, curriculum }) => {
   return (
     <>
       <h1>{curriculum}</h1>
@@ -42,4 +42,4 @@ const Courses = ({ courses, curriculum }) => {
   )
 }
 
-export default Courses
+export default Course
