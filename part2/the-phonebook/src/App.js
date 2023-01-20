@@ -3,7 +3,6 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import phonebookService from './services/communications'
-import axios from 'axios'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -32,7 +31,6 @@ const App = () => {
           const personObject = {
             name: newName,
             number: newNum,
-            id: allPersonData.length + 1
           }
 
           phonebookService
@@ -45,7 +43,14 @@ const App = () => {
 
         } else alert(`${newName} is already added to phonebook`)
       })
+  }
 
+  const deletePersonAction = (person) => {
+    phonebookService
+      .deletePerson(person)
+      .then(() => phonebookService
+        .getAllPerson()
+        .then(allPersonData => setPersons(allPersonData)))
 
   }
 
@@ -79,7 +84,7 @@ const App = () => {
 
       <h3>Number</h3>
 
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} deletePerson={deletePersonAction} />
     </div>
   )
 }

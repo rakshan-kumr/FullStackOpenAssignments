@@ -1,34 +1,24 @@
 {
   "persons": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
+      "name": "John Wick",
+      "number": "120-696348734",
       "id": 1
     },
     {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
+      "name": "Black Adam",
+      "number": "120-3240987",
       "id": 2
     },
     {
-      "name": "Dan Abramov",
-      "number": "12-43-234345",
-      "id": 3
-    },
-    {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
+      "name": "Captain America",
+      "number": "155-32409843",
       "id": 4
     },
     {
-      "name": "Arto hellas",
-      "number": "",
+      "name": "Iron Man",
+      "number": "130-29308324",
       "id": 5
-    },
-    {
-      "name": "test one",
-      "number": "2387329498",
-      "id": 6
     }
   ]
 }
