@@ -9,10 +9,17 @@ const getAllPerson = () => {
         .then(response => response.data)
 }
 
-const updatePerson = newPerson => {
-    console.log('UpdatePerson Function fired!');
+const createPerson = newPerson => {
+    console.log('createPerson Function fired!');
     return axios
         .post(baseUrl, newPerson)
+}
+
+const updatePerson = (id, newPersonObject) => {
+    console.log('updatePerson Function fired!');
+    return axios
+        .put(`${baseUrl}/${id}`, newPersonObject)
+        .then(response => response.data)
 }
 
 const deletePerson = person => {
@@ -25,4 +32,4 @@ const deletePerson = person => {
 }
 
 
-export default { getAllPerson, updatePerson, deletePerson }
+export default { getAllPerson, createPerson, deletePerson, updatePerson }

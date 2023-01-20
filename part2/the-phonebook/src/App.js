@@ -22,8 +22,9 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
 
-    phonebookService
-      .getAllPerson()
+    const getAllPersonData = phonebookService.getAllPerson()
+
+    getAllPersonData
       .then(allPersonData => {
         const isExist = allPersonData.some(person => person.name === newName)
 
@@ -34,14 +35,29 @@ const App = () => {
           }
 
           phonebookService
-            .updatePerson(personObject)
+            .createPerson(personObject)
             .then(response => {
               setPersons(persons.concat(response.data))
               setNewName("")
               setNewNum("")
             })
 
-        } else alert(`${newName} is already added to phonebook`)
+        } else {
+          const addConfirm = window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`)
+          if (addConfirm) {
+            getAllPersonData.then(allPersonData => {
+              const personObject = allPersonData.find(person => person.name === newName)
+              const newPersonObject = { ...personObject, number: newNum }
+
+              phonebookService
+                .updatePerson(newPersonObject.id, newPersonObject)
+                .then(returnedPersonObject => {
+                  setPersons(persons
+                    .map(person => person.id === newPersonObject.id ? returnedPersonObject : person))
+                })
+            })
+          }
+        }
       })
   }
 
