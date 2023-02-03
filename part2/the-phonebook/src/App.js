@@ -36,7 +36,7 @@ const App = () => {
         phonebookService.createPerson(personObject).then((response) => {
           console.log("Persons: ", persons);
           console.log("response.data: ", response.data);
-          setPersons(response.data);
+          setPersons(persons.concat(response.data));
           setMessagetype("success-message");
           setresultMessage(`Added ${personObject.name}`);
           setTimeout(() => {
