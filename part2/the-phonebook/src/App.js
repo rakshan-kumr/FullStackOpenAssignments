@@ -25,15 +25,17 @@ const App = () => {
     const getAllPersonData = phonebookService.getAllPerson();
 
     getAllPersonData.then((allPersonData) => {
-      const isExist = allPersonData.some((person) => person.name === newName);
+      //     const isExist = allPersonData.some((person) => person.name === newName);
 
-      if (!isExist) {
-        const personObject = {
-          name: newName,
-          number: newNum,
-        };
+      //     if (!isExist) {
+      const personObject = {
+        name: newName,
+        number: newNum,
+      };
 
-        phonebookService.createPerson(personObject).then((response) => {
+      phonebookService
+        .createPerson(personObject)
+        .then((response) => {
           console.log("Persons: ", persons);
           console.log("response.data: ", response.data);
           setPersons(persons.concat(response.data));
@@ -44,38 +46,47 @@ const App = () => {
           }, 5000);
           setNewName("");
           setNewNum("");
-        });
-      } else {
-        const addConfirm = window.confirm(
-          `${newName} is already added to phonebook, replace the old number with new one?`
-        );
-        if (addConfirm) {
-          getAllPersonData.then((allPersonData) => {
-            const personObject = allPersonData.find(
-              (person) => person.name === newName
-            );
-            const newPersonObject = { ...personObject, number: newNum };
-
-            phonebookService
-              .updatePerson(newPersonObject.id, newPersonObject)
-              .then((returnedPersonObject) => {
-                setPersons(
-                  persons.map((person) =>
-                    person.id === newPersonObject.id
-                      ? returnedPersonObject
-                      : person
-                  )
-                );
-              });
-            setresultMessage(`Added ${personObject.name}`);
+        })
+        .catch((error) => {
+          console.log(error.response.data.code);
+          if (error.response.data.name === "ValidationError") {
+            setMessagetype("error-message");
+            setresultMessage(`${error.response.data.message}`);
             setTimeout(() => {
               setresultMessage(null);
             }, 5000);
-            setNewName("");
-            setNewNum("");
-          });
-        }
-      }
+          } else if (error.response.data.code === 11000) {
+            const addConfirm = window.confirm(
+              `${newName} is already added to phonebook, replace the old number with new one?`
+            );
+            if (addConfirm) {
+              const personObject = allPersonData.find(
+                (person) => person.name === newName
+              );
+
+              phonebookService
+                .updatePerson(personObject.id, {
+                  name: personObject.name,
+                  number: newNum,
+                })
+                .then((result) => {
+                  console.log("After update", result);
+                  setPersons(
+                    persons.map((person) =>
+                      person.id === result.id ? result : person
+                    )
+                  );
+                  setMessagetype("success-message");
+                  setresultMessage(`Added ${personObject.name}`);
+                  setTimeout(() => {
+                    setresultMessage(null);
+                  }, 5000);
+                });
+
+              console.log(personObject);
+            }
+          }
+        });
     });
   };
 
