@@ -115,7 +115,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Phonebook</h1>
+      <h1>Phonebook - Frontend</h1>
 
       <Notification message={resultMessage} messageType={messageType} />
 
