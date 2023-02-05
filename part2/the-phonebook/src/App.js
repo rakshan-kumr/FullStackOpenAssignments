@@ -81,6 +81,8 @@ const App = () => {
                   setTimeout(() => {
                     setresultMessage(null);
                   }, 5000);
+                  setNewName("");
+                  setNewNum("");
                 });
 
               console.log(personObject);
@@ -126,7 +128,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Phonebook - Frontend</h1>
+      <h1>Phonebook</h1>
 
       <Notification message={resultMessage} messageType={messageType} />
 
