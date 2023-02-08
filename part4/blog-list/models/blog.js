@@ -1,9 +1,4 @@
 const mongoose = require('mongoose')
-const logger = require('../utils/logger')
-const config = require('../utils/config')
-
-mongoose.set('strictQuery', false)
-
 
 const blogSchema = new mongoose.Schema({
   title: String,
@@ -22,9 +17,6 @@ blogSchema.set('toJSON', {
 
 const Blog = mongoose.model('Blog', blogSchema)
 
-const mongoUrl = config.MONGODB_URI
-mongoose.connect(mongoUrl).then(() => {
-  logger.info('connected to server')
-})
+
 
 module.exports = Blog
