@@ -6,6 +6,9 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
+app.use(cors())
+app.use(express.json())
+
 const blogSchema = new mongoose.Schema({
   title: String,
   author: String,
@@ -28,8 +31,15 @@ mongoose.connect(mongoUrl).then(() => {
   console.log('connected to server')
 })
 
-app.use(cors())
-app.use(express.json())
+const requestLogger = (request, response, next) => {
+  console.log('Method: ', request.method)
+  console.log('Path: ', request.path)
+  console.log('Body: ', request.body)
+  console.log('----')
+  next()
+}
+
+app.use(requestLogger)
 
 app.get('/api/blogs', (request, response) => {
   Blog
