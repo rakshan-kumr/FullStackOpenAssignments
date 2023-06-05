@@ -13,3 +13,14 @@ Content-Type: application/json
 
 ###
 DELETE http://localhost:3003/api/blogs/647d949493398478137d6b68
+
+###
+PUT http://localhost:3003/api/blogs/63e3361c5a6fb3ce75274991
+Content-Type: application/json
+
+{
+     "title": "Second blog",
+    "author": "Second Me",
+    "url": "http://www.mysecondblog.com",
+    "likes": 22
+}

@@ -75,6 +75,26 @@ test('Blog can be deleted', async () => {
 
 })
 
+test('Blog can be edited', async () => {
+
+  const response = await api.get('/api/blogs')
+  const blogsAtStart = response.body
+  const blogToUpdate= blogsAtStart[0]
+
+  const updatedBlog = {
+    title: 'Update blog',
+    author: 'Me',
+    url: 'http://www.myupdateblog.com',
+    likes: 36,
+  }
+
+  const res = await api.put(`/api/blogs/${blogToUpdate.id}`).send(updatedBlog)
+
+  const blogsAfterUpdate = await api.get('/api/blogs')
+
+  expect(blogsAfterUpdate.body).toContainEqual(res.body)
+})
+
 
 afterAll(async () => {
   await mongoose.connection.close()
