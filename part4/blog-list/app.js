@@ -12,6 +12,7 @@ mongoose.set('strictQuery', false)
 logger.info('Connecting to database...')
 
 const mongoUrl = config.MONGODB_URI
+
 mongoose.connect(mongoUrl).then(() => {
   logger.info('connected to server')
 }).catch((error) => {
