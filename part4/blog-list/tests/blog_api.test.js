@@ -60,6 +60,22 @@ test('Post request creates a new blog', async () => {
   expect(response.body).toHaveLength(initialBlogs.length + 1)
 })
 
+test('Blog can be deleted', async () => {
+  const response = await api.get('/api/blogs')
+  const blogsAtStart = response.body
+  const blogToDelete = blogsAtStart[0]
+
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+
+  const secondResponse = await api.get('/api/blogs')
+  const blogsAtEnd = secondResponse.body
+  expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
+
+})
+
+
 afterAll(async () => {
   await mongoose.connection.close()
 })

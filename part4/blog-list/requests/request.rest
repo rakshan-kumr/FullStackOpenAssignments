@@ -10,3 +10,6 @@ Content-Type: application/json
     "url": "http://www.mysixthblog.com",
     "likes": 66
 }
+
+###
+DELETE http://localhost:3003/api/blogs/647d949493398478137d6b68
