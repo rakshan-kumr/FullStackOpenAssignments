@@ -13,6 +13,7 @@ const unknownEndpoint = (request, response) => {
 }
 
 const errorHandler = (error, request, response, next) => {
+  console.log('error handled called.')
   logger.error(error.message)
 
   if (error.name === 'CastError') {
@@ -22,9 +23,13 @@ const errorHandler = (error, request, response, next) => {
   }  else if (error.name ===  'JsonWebTokenError') {
     return response.status(400).json({ error: error.message
     })
-  }
+  } else console.log(error.name)
 
   next(error)
 }
 
-module.exports = { requestLogger, unknownEndpoint, errorHandler }
+module.exports = {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler
+}

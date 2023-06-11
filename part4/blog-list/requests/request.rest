@@ -8,11 +8,12 @@ Content-Type: application/json
     "title": "Sixth blog",
     "author": "Me",
     "url": "http://www.mysixthblog.com",
-    "likes": 66
+    "likes": 66,
+    "userId": "64858773850e882af62f7882"
 }
 
 ###
-DELETE http://localhost:3003/api/blogs/647d949493398478137d6b68
+DELETE http://localhost:3003/api/blogs/647d49493398478137d6b68
 
 ###
 PUT http://localhost:3003/api/blogs/647d8c49a2590bd8d0bca8e3
@@ -26,11 +27,14 @@ Content-Type: application/json
 }
 
 ###
+GET http://localhost:3003/api/users
+
+###
 POST http://localhost:3003/api/users
 Content-Type: application/json
 
 {
-    "username": "rakshank",
-    "name" : "Rakshan Kumar",
-    "password": "myPassword"
+    "username": "ritheshkumarKRi",
+    "name" : "RitheshKumair",
+    "password": "mynameis"
 }
