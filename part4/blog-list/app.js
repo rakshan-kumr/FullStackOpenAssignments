@@ -23,12 +23,12 @@ mongoose.connect(mongoUrl).then(() => {
   return logger.error('error connecting to MongoDB', error.message)
 }
 )
-
+app
 app.use(cors())
 app.use(express.json())
 app.use(middleware.requestLogger)
 app.use(middleware.tokenExtracter)
-app.use('/api/blogs', blogRouter)
+app.use('/api/blogs', middleware.userExtracter ,blogRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 
