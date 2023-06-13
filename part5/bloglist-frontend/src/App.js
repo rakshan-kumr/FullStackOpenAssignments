@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import Blog from "./components/Blog";
 import Login from "./components/Login";
 import blogService from "./services/blogs";
@@ -12,6 +13,7 @@ const App = () => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
+  const [message, setMessage] = useState(null);
 
   const [user, setUser] = useState(null);
 
@@ -68,22 +70,37 @@ const App = () => {
       setUsername("");
       setPassword("");
     } catch (exception) {
-      console.log(exception);
+      setMessage("Wrong credentials");
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
     }
   };
 
   const createNewBlog = async (event) => {
     event.preventDefault();
-    const returnedBlog = await blogService.create({
-      title,
-      author,
-      url,
-    });
 
-    setBlogs(blogs.concat(returnedBlog));
-    setTitle("");
-    setAuthor("");
-    setUrl("");
+    try {
+      const returnedBlog = await blogService.create({
+        title,
+        author,
+        url,
+      });
+
+      setBlogs(blogs.concat(returnedBlog));
+      setMessage(`A new blog "${title}" by ${author} added`);
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+      setTitle("");
+      setAuthor("");
+      setUrl("");
+    } catch (error) {
+      setMessage("Something went wrong");
+      setTimeout(() => {
+        setMessage(null);
+      }, 5000);
+    }
   };
 
   const logout = () => {
@@ -91,14 +108,25 @@ const App = () => {
     setUser(null);
   };
 
+  const Notification = () => {
+    if (message === null) {
+      return null;
+    }
+
+    return <div className="message">{message}</div>;
+  };
+
   if (user === null)
     return (
-      <Login
-        username={username}
-        password={password}
-        onChange={changeHander}
-        onSubmit={loginHandler}
-      />
+      <>
+        <Notification />
+        <Login
+          username={username}
+          password={password}
+          onChange={changeHander}
+          onSubmit={loginHandler}
+        />
+      </>
     );
   // console.log(user);
   return (
@@ -108,6 +136,7 @@ const App = () => {
         {user.name} logged in
         <button onClick={logout}>logout</button>
       </div>
+      <Notification />
       <BlogForm
         title={title}
         author={author}
