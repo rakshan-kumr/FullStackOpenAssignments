@@ -104,6 +104,11 @@ const App = () => {
     return returnedBlog;
   };
 
+  const delBlog = async (id) => {
+    await blogService.deleteBlog(id);
+    setBlogs(blogs.filter((blog) => blog.id !== id));
+  };
+
   const logout = () => {
     window.localStorage.removeItem("loggedInUser");
     setUser(null);
@@ -144,7 +149,12 @@ const App = () => {
         <BlogForm createBlog={createNewBlog} />
       </Togglable>
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} incrementLike={updateLike} />
+        <Blog
+          key={blog.id}
+          blog={blog}
+          incrementLike={updateLike}
+          delBlog={delBlog}
+        />
       ))}
     </div>
   );
