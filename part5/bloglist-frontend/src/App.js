@@ -16,6 +16,29 @@ const App = () => {
 
   const blogFormRef = useRef();
 
+  const changeHander = (event) => {
+    switch (event.target.id) {
+      case "username":
+        setUsername(event.target.value);
+        break;
+      case "password":
+        setPassword(event.target.value);
+        break;
+      // case "title":
+      //   setTitle(event.target.value);
+      //   break;
+      // case "author":
+      //   setAuthor(event.target.value);
+      //   break;
+      // case "url":
+      //   setUrl(event.target.value);
+      //   break;
+
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
@@ -91,6 +114,7 @@ const App = () => {
         <Login
           username={username}
           password={password}
+          onChange={changeHander}
           onSubmit={loginHandler}
         />
       </>
