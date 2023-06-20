@@ -79,7 +79,7 @@ const App = () => {
 
     try {
       const returnedBlog = await blogService.create(blogObject);
-      setBlogs(blogs.concat(returnedBlog));
+      setBlogs(blogs.concat({ ...returnedBlog, user: user }));
       setMessage(
         `A new blog "${returnedBlog.title}" by ${returnedBlog.author} added`
       );

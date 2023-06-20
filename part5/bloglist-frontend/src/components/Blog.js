@@ -17,7 +17,7 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   };
 
-  console.log(blog);
+  // console.log(blog);
 
   const blogDetail = () => (
     <>
