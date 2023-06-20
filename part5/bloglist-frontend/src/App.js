@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import Blog from "./components/Blog";
 import Login from "./components/Login";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import BlogForm from "./components/BlogForm";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -16,6 +17,8 @@ const App = () => {
   const [message, setMessage] = useState(null);
 
   const [user, setUser] = useState(null);
+
+  const blogFormRef = useRef();
 
   const changeHander = (event) => {
     switch (event.target.id) {
@@ -79,7 +82,6 @@ const App = () => {
 
   const createNewBlog = async (event) => {
     event.preventDefault();
-
     try {
       const returnedBlog = await blogService.create({
         title,
@@ -87,6 +89,7 @@ const App = () => {
         url,
       });
 
+      blogFormRef.current.toggleVisibility();
       setBlogs(blogs.concat(returnedBlog));
       setMessage(`A new blog "${title}" by ${author} added`);
       setTimeout(() => {
@@ -137,13 +140,15 @@ const App = () => {
         <button onClick={logout}>logout</button>
       </div>
       <Notification />
-      <BlogForm
-        title={title}
-        author={author}
-        url={url}
-        onChange={changeHander}
-        onSubmit={createNewBlog}
-      />
+      <Togglable buttonLabel="new note" ref={blogFormRef}>
+        <BlogForm
+          title={title}
+          author={author}
+          url={url}
+          onChange={changeHander}
+          onSubmit={createNewBlog}
+        />
+      </Togglable>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
