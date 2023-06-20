@@ -97,7 +97,9 @@ const App = () => {
   const updateLike = async (blogObject) => {
     const returnedBlog = await blogService.update(blogObject.id, blogObject);
     setBlogs(
-      blogs.map((blog) => (blog.id !== returnedBlog.id ? blog : returnedBlog))
+      blogs.map((blog) =>
+        blog.id !== returnedBlog.id ? blog : { ...returnedBlog, user: user }
+      )
     );
     return returnedBlog;
   };
@@ -114,6 +116,8 @@ const App = () => {
 
     return <div className="message">{message}</div>;
   };
+
+  blogs.sort((a, b) => a.likes - b.likes);
 
   if (user === null)
     return (
