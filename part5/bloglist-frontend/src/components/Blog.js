@@ -1,12 +1,18 @@
 import { useState } from "react";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, incrementLike }) => {
   const [blogDetailVisible, setBlogDetailVisible] = useState(false);
+  const [likes, setLikes] = useState(blog.likes);
 
   const buttonLabel = blogDetailVisible ? "hide" : "view";
 
   const toggleVisibility = () => {
     setBlogDetailVisible(!blogDetailVisible);
+  };
+
+  const updateLike = async () => {
+    const likedBlog = await incrementLike({ ...blog, likes: blog.likes + 1 });
+    setLikes(likedBlog.likes);
   };
 
   const blogStyle = {
@@ -23,7 +29,7 @@ const Blog = ({ blog }) => {
     <>
       <p>{blog.url}</p>
       <p>
-        likes 0 <button>like</button>
+        likes {likes} <button onClick={updateLike}>like</button>
       </p>
 
       <p>{blog.user.name}</p>
