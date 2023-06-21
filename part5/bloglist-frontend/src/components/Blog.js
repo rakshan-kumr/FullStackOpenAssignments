@@ -15,7 +15,7 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
       const likedBlog = await incrementLike({ ...blog, likes: blog.likes + 1 })
       setLikes(likedBlog.likes)
     } catch (error) {
-      console.log(error.message)
+      error
     }
 
   }
