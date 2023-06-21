@@ -1,13 +1,5 @@
 import PropTypes from 'prop-types'
 
-Login.PropTypes = {
-  username: PropTypes.string.isRequired,
-  password:PropTypes.string.isRequired,
-  onChange:PropTypes.func.isRequired,
-  onSubmit:PropTypes.func.isRequired
-}
-
-
 const Login = ( { username, password, onChange, onSubmit } ) => (
   <div>
     <h2>Login to the Application</h2>
@@ -24,5 +16,12 @@ const Login = ( { username, password, onChange, onSubmit } ) => (
     </form>
   </div>
 )
+
+Login.propTypes = {
+  username: PropTypes.string.isRequired,
+  password:PropTypes.string.isRequired,
+  onChange:PropTypes.func.isRequired,
+  onSubmit:PropTypes.func.isRequired
+}
 
 export default Login

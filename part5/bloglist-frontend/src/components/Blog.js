@@ -11,8 +11,13 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
   }
 
   const updateLike = async () => {
-    const likedBlog = await incrementLike({ ...blog, likes: blog.likes + 1 })
-    setLikes(likedBlog.likes)
+    try {
+      const likedBlog = await incrementLike({ ...blog, likes: blog.likes + 1 })
+      setLikes(likedBlog.likes)
+    } catch (error) {
+      console.log(error.message)
+    }
+
   }
 
   const deleteBlog = async () => {
@@ -33,24 +38,27 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
   // console.log(blog);
 
   const blogDetail = () => (
-    <>
-      <p>{blog.url}</p>
-      <p>
-        likes {likes} <button onClick={updateLike}>like</button>
+    <div className='blog-detail'>
+      <p className='url'>{blog.url}</p>
+      <p className='likes'>
+        likes {likes} <button onClick={updateLike} className='like-button'>like</button>
       </p>
 
-      <p>{blog.user.name}</p>
+      <p className='username'>{blog.user.name}</p>
       <button onClick={deleteBlog}>remove</button>
-    </>
+    </div>
   )
 
   return (
     <div style={blogStyle}>
       <div>
         {blog.title} {blog.author}{' '}
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        <button onClick={toggleVisibility} className='view-hide-button'>{buttonLabel}</button>
       </div>
-      {blogDetailVisible ? blogDetail() : null}
+      <div>
+        {blogDetailVisible ? blogDetail() : null}
+      </div>
+
     </div>
   )
 }
