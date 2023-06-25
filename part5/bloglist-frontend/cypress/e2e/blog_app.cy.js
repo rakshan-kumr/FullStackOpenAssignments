@@ -40,4 +40,22 @@ describe('Blog app', function() {
         .and('have.css', 'color', 'rgb(128, 128, 128)') // checking for grey as the error color of red is not implemented.
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      // log in user here
+      cy.login({ username: 'anilkumar', password: 'anilk' })
+    })
+
+    it.only('A blog can be created', function() {
+      // ...
+      cy.contains('new blog').click()
+      cy.get('#title').type('first Title')
+      cy.get('#author').type('first Author')
+      cy.get('#url').type('firsturl.com')
+      cy.get('#create-button').click()
+
+      cy.contains('first Title first Author')
+    })
+  })
 })

@@ -109,7 +109,12 @@ const App = () => {
       await blogService.deleteBlog(id)
       setBlogs(blogs.filter((blog) => blog.id !== id))
     } catch (exception) {
-      console.log(exception)
+      setMessage(`Error: \n ${exception.response.data.error}`)
+
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+      console.log(exception.response.data.error)
     }
   }
 
