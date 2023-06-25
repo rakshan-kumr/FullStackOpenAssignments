@@ -136,9 +136,6 @@ describe('Blog app', function() {
 
       cy.get('.blog-element').eq(0).should('contain', 'Second Title Second Author')
       cy.get('.blog-element').eq(1).should('contain', 'First Title First Author')
-
-
-
     })
   })
 })

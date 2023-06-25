@@ -4,7 +4,7 @@ const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 
 blogRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({}).populate('user' , { name: 1, username: 1 })
+  const blogs = await Blog.find({}).populate('user', { name: 1, username: 1 })
   response.json(blogs)
 })
 
@@ -24,7 +24,7 @@ blogRouter.post('/', async (request, response) => {
     author: body.author,
     url: body.url,
     likes: body.likes,
-    user : user.id
+    user: user.id,
   })
 
   const result = await blog.save()
@@ -44,22 +44,33 @@ blogRouter.delete('/:id', async (request, response) => {
   if (!(decodedToken.id && decodedToken.id === blog.user.toString())) {
     return response.status(401).json({ error: 'token invalid' })
   }
-  await Blog.findByIdAndRemove(request.params.id)
+  const result = await Blog.findByIdAndRemove(request.params.id)
+  console.log(typeof result)
   response.status(204).end()
 })
 
-
 blogRouter.put('/:id', async (request, response) => {
-  const body  = request.body
+  const body = request.body
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  console.log(decodedToken)
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+
+  const user = await User.findById(decodedToken.id)
 
   const blog = {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes
+    likes: body.likes,
+    user: user.id,
   }
 
-  const updatedNote = await Blog.findByIdAndUpdate(request.params.id, blog, { new:true })
+  const updatedNote = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  })
   response.json(updatedNote)
 })
 
