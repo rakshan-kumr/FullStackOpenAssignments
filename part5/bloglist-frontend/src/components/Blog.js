@@ -5,6 +5,8 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
   const [likes, setLikes] = useState(blog.likes)
 
   const buttonLabel = blogDetailVisible ? 'hide' : 'view'
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'))
+
 
   const toggleVisibility = () => {
     setBlogDetailVisible(!blogDetailVisible)
@@ -35,7 +37,12 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
     marginBottom: 5,
   }
 
-  // console.log(blog);
+  console.log(blog.user.username, )
+
+  const deleteButton = () => (
+
+    <button className='delete-blog-button' onClick={deleteBlog}>remove</button>
+  )
 
   const blogDetail = () => (
     <div className='blog-detail'>
@@ -44,13 +51,13 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
         likes {likes} <button onClick={updateLike} className='like-button'>like</button>
       </p>
 
-      <p className='username'>{blog.user.name}</p>
-      <button onClick={deleteBlog}>remove</button>
+      <p className='creator'>{blog.user.name}</p>
+      {loggedInUser.username === blog.user.username ? deleteButton() : null}
     </div>
   )
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog-element'>
       <div>
         {blog.title} {blog.author}{' '}
         <button onClick={toggleVisibility} className='view-hide-button'>{buttonLabel}</button>

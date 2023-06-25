@@ -9,6 +9,12 @@ describe('Blog app', function() {
       password: 'anilk'
     }
     cy.request('POST', 'http://localhost:3003/api/users/', user)
+    const user2 = {
+      name: 'Second User',
+      username: 'seconduser',
+      password: 'second'
+    }
+    cy.request('POST', 'http://localhost:3003/api/users/', user2)
     cy.visit('http://localhost:3000')
   })
 
@@ -58,7 +64,7 @@ describe('Blog app', function() {
       cy.contains('first Title first Author')
     })
 
-    it.only('User can like a blog', function() {
+    it('User can like a blog', function() {
       cy.createBlog({
         title: 'First Title',
         author: 'First Author',
@@ -68,6 +74,39 @@ describe('Blog app', function() {
       cy.get('.likes').contains('likes 0')
       cy.get('.like-button').click()
       cy.get('.likes').contains('likes 1')
+    })
+
+    it('User can delete the blog', function() {
+      cy.createBlog({
+        title: 'First Title',
+        author: 'First Author',
+        url: 'firsturl.com'
+      })
+      cy.get('.view-hide-button').click()
+      cy.get('.blog-element')
+      cy.get('.delete-blog-button').click()
+      cy.get('.blog-element').should('not.exist')
+    })
+
+    it.only('only creator can see delete button of the blog', function() {
+      cy.createBlog({
+        title: 'First Title',
+        author: 'First Author',
+        url: 'firsturl.com'
+      })
+      cy.get('#logout-button').click()
+      cy.login({ username: 'seconduser', password: 'second' })
+      cy.createBlog({
+        title: 'Second Title',
+        author: 'Second Author',
+        url: 'secondurl.com'
+      })
+      cy.get('.view-hide-button').click({
+        multiple: true
+      })
+      cy.get('.blog-element:first').find('.delete-blog-button').should('not.exist')
+      cy.get('.blog-element:last').find('.delete-blog-button')
+
     })
   })
 })
