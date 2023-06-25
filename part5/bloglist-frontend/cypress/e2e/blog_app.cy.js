@@ -88,7 +88,7 @@ describe('Blog app', function() {
       cy.get('.blog-element').should('not.exist')
     })
 
-    it.only('only creator can see delete button of the blog', function() {
+    it('only creator can see delete button of the blog', function() {
       cy.createBlog({
         title: 'First Title',
         author: 'First Author',
@@ -106,6 +106,38 @@ describe('Blog app', function() {
       })
       cy.get('.blog-element:first').find('.delete-blog-button').should('not.exist')
       cy.get('.blog-element:last').find('.delete-blog-button')
+
+    })
+
+    it.only('blog is ordered according to likes', function() {
+      cy.createBlog({
+        title: 'First Title',
+        author: 'First Author',
+        url: 'firsturl.com'
+      })
+      cy.createBlog({
+        title: 'Second Title',
+        author: 'Second Author',
+        url: 'secondurl.com'
+      })
+      cy.get('.view-hide-button').click({
+        multiple: true
+      })
+
+      cy.contains('First Title First Author').parent().as('firstBlog')
+      cy.contains('Second Title Second Author').parent().as('secondBlog')
+
+      cy.get('@firstBlog').find('.like-button').click()
+      cy.get('@firstBlog').find('.likes').contains('likes 1')
+      cy.get('@firstBlog').find('.like-button').click()
+      cy.get('@firstBlog').find('.likes').contains('likes 2')
+      cy.get('@secondBlog').find('.like-button').click()
+      cy.get('@secondBlog').find('.likes').contains('likes 1')
+
+      cy.get('.blog-element').eq(0).should('contain', 'Second Title Second Author')
+      cy.get('.blog-element').eq(1).should('contain', 'First Title First Author')
+
+
 
     })
   })
