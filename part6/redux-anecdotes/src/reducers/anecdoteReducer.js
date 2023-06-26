@@ -55,6 +55,7 @@ const reducer = (state = initialState, action) => {
     case "CREATE_NOTE":
       const newState = [...state, action.payload]
       return newState
+
     default:
       break;
   }
