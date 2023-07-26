@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux'
 import { createAnecdote } from '../reducers/anecdoteReducer'
+import { setNotifMessage } from '../reducers/notificationReducer'
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch()
@@ -7,6 +8,12 @@ const AnecdoteForm = () => {
   const createNewAnecdote = (event) => {
     event.preventDefault()
     dispatch(createAnecdote(event.target.anecdote.value))
+    dispatch(
+      setNotifMessage(`You added anecdote "${event.target.anecdote.value}"`)
+    )
+    setTimeout(() => {
+      dispatch(setNotifMessage(''))
+    }, 5000)
     event.target.anecdote.value = ''
   }
 

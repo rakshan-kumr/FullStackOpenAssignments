@@ -9,16 +9,18 @@ const AnecdoteList = () => {
     )
     return filteredAnecdote
   })
-  const notification = useSelector(({ notification }) => notification)
-  console.log(notification)
-  const dispatch = useDispatch()
 
   const sortedAnecdotes = anecdotes.sort((a, b) => a.votes - b.votes)
 
+  const dispatch = useDispatch()
   const vote = (id) => {
     console.log('vote', id)
+    const votedAnecdote = anecdotes.find((anecdote) => anecdote.id === id)
     dispatch(upVote(id))
-    dispatch(setNotifMessage('Voted'))
+    dispatch(setNotifMessage(`You voted "${votedAnecdote.content}"`))
+    setTimeout(() => {
+      dispatch(setNotifMessage(null))
+    }, 5000)
   }
   return (
     <div>
