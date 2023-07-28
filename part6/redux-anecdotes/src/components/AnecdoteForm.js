@@ -8,7 +8,6 @@ const AnecdoteForm = () => {
   const createAnecdote = async (event) => {
     event.preventDefault()
     dispatch(createNewAnecdote(event.target.anecdote.value))
-
     dispatch(
       setNotification(`You added anecdote "${event.target.anecdote.value}"`, 5)
     )
