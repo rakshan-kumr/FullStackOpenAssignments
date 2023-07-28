@@ -1,15 +1,23 @@
-import { useQuery } from 'react-query'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-import { getAnecdotes } from './requests'
+import { addAnecdote, getAnecdotes } from './requests'
 
 const App = () => {
+  const queryClient = useQueryClient()
+
   const handleVote = (anecdote) => {
     console.log('vote')
   }
 
   const getAnecdoteQuery = useQuery('anecdotes', getAnecdotes, {
     retry: false,
+  })
+
+  const addAnecdoteMutation = useMutation(addAnecdote, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('anecdotes')
+    },
   })
 
   if (getAnecdoteQuery.isLoading) return <p>Loading...</p>
@@ -23,7 +31,7 @@ const App = () => {
       <h3>Anecdote app</h3>
 
       <Notification />
-      <AnecdoteForm />
+      <AnecdoteForm addAnecdoteMutation={addAnecdoteMutation} />
 
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
