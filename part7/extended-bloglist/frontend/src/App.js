@@ -5,6 +5,7 @@ import { setMessage } from './actions/notification'
 import { setUser } from './actions/user'
 
 import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 import Blog from './components/Blog'
 import Login from './components/Login'
@@ -12,6 +13,8 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import Users from './components/Users'
+import UserDetails from './components/UserDetails'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -160,6 +163,24 @@ const App = () => {
       </>
     )
 
+  const BlogListElements = () => {
+    return (
+      <>
+        <Notification />
+        <Togglable buttonLabel='new blog' ref={blogFormRef}>
+          <BlogForm createBlog={createNewBlog} />
+        </Togglable>
+        {blogs.map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            incrementLike={updateLike}
+            delBlog={delBlog}
+          />
+        ))}
+      </>
+    )
+  }
 
   // console.log(user);
   return (
@@ -170,19 +191,19 @@ const App = () => {
         <button id='logout-button' onClick={logout}>
           logout
         </button>
+        <Router>
+          <div style={{
+            padding: '10px',
+          }}><Link to='/users'>Users</Link></div>
+
+          <Routes>
+            <Route path='/' element={<BlogListElements />}></Route>
+            <Route path='/users' element={<Users />}></Route>
+            <Route path='/users/:id' element={<UserDetails />}></Route>
+          </Routes>
+        </Router>
       </div>
-      <Notification />
-      <Togglable buttonLabel='new blog' ref={blogFormRef}>
-        <BlogForm createBlog={createNewBlog} />
-      </Togglable>
-      {blogs.map((blog) => (
-        <Blog
-          key={blog.id}
-          blog={blog}
-          incrementLike={updateLike}
-          delBlog={delBlog}
-        />
-      ))}
+
     </div>
   )
 }

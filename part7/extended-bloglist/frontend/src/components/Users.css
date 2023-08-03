@@ -1,0 +1,8 @@
+.row {
+    display: flex;
+    width: 350px;
+  }
+  
+.column {
+    flex: 50%;
+  }
