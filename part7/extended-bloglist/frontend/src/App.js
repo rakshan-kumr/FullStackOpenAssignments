@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useContext } from 'react'
 import NotificationContext from './context/NotificationContext'
 import { setMessage } from './actions/notification'
+import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 import Blog from './components/Blog'
 import Login from './components/Login'
@@ -10,11 +11,18 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   // const [message, setMessage] = useState(null)
+
+  const queryClient = useQueryClient()
+
+  const setBlogs = (blog) => {
+    console.log(blog)
+    return
+  }
 
   const blogFormRef = useRef()
 
@@ -34,9 +42,23 @@ const App = () => {
     }
   }
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+  const resultBlogs = useQuery('blogs', () => {
+    return blogService.getAll()
+  })
+
+  const newBlogutation = useMutation(blogService.create, {
+    onSuccess: (newBlog) => {
+      const blogs = queryClient.getQueryData('blogs')
+      queryClient.setQueryData('blogs', blogs.concat(newBlog))
+      dispatch(setMessage(
+        `A new blog "${newBlog.title}" by ${newBlog.author} added`)
+      )
+      setTimeout(() => {
+        dispatch(setMessage(null))
+      }, 5000)
+    }
+  })
+
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedInUser')
@@ -46,6 +68,10 @@ const App = () => {
       setUser(user)
     }
   }, [])
+
+  if (resultBlogs.isLoading) return <div>Loading...</div>
+
+  const blogs = resultBlogs.data
 
   const loginHandler = async (event) => {
     event.preventDefault()
@@ -73,15 +99,13 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
 
     try {
-      const returnedBlog = await blogService.create(blogObject)
-      setBlogs(blogs.concat({ ...returnedBlog, user: user }))
-      dispatch(setMessage(
-        `A new blog "${returnedBlog.title}" by ${returnedBlog.author} added`)
-      )
-      setTimeout(() => {
-        dispatch(setMessage(null))
-      }, 5000)
+      const returnedBlog = newBlogutation.mutate(blogObject)
+      console.log(returnedBlog, newBlogutation)
+      // const returnedBlog = await blogService.create(blogObject)
+      // setBlogs(blogs.concat({ ...returnedBlog, user: user }))
+
     } catch (error) {
+      console.log(error)
       dispatch(setMessage('Something went wrong'))
       setTimeout(() => {
         dispatch(setMessage(null))
@@ -144,6 +168,8 @@ const App = () => {
         />
       </>
     )
+
+
   // console.log(user);
   return (
     <div>

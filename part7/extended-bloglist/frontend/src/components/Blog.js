@@ -37,8 +37,6 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
     marginBottom: 5,
   }
 
-  console.log(blog.user.username, )
-
   const deleteButton = () => (
 
     <button className='delete-blog-button' onClick={deleteBlog}>remove</button>
