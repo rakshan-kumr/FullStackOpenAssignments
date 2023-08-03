@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
+import NotificationContext from './context/NotificationContext'
+import { setMessage } from './actions/notification'
 
 import Blog from './components/Blog'
 import Login from './components/Login'
@@ -12,9 +14,11 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState(null)
+  // const [message, setMessage] = useState(null)
 
   const blogFormRef = useRef()
+
+  const [message, dispatch] = useContext(NotificationContext)
 
   const changeHander = (event) => {
     switch (event.target.id) {
@@ -24,15 +28,6 @@ const App = () => {
     case 'password':
       setPassword(event.target.value)
       break
-      // case "title":
-      //   setTitle(event.target.value);
-      //   break;
-      // case "author":
-      //   setAuthor(event.target.value);
-      //   break;
-      // case "url":
-      //   setUrl(event.target.value);
-      //   break;
 
     default:
       break
@@ -67,9 +62,9 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setMessage('Wrong credentials')
+      dispatch(setMessage('Wrong credentials'))
       setTimeout(() => {
-        setMessage(null)
+        dispatch(setMessage(null))
       }, 5000)
     }
   }
@@ -80,16 +75,16 @@ const App = () => {
     try {
       const returnedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat({ ...returnedBlog, user: user }))
-      setMessage(
-        `A new blog "${returnedBlog.title}" by ${returnedBlog.author} added`
+      dispatch(setMessage(
+        `A new blog "${returnedBlog.title}" by ${returnedBlog.author} added`)
       )
       setTimeout(() => {
-        setMessage(null)
+        dispatch(setMessage(null))
       }, 5000)
     } catch (error) {
-      setMessage('Something went wrong')
+      dispatch(setMessage('Something went wrong'))
       setTimeout(() => {
-        setMessage(null)
+        dispatch(setMessage(null))
       }, 5000)
     }
   }
@@ -108,11 +103,15 @@ const App = () => {
     try {
       await blogService.deleteBlog(id)
       setBlogs(blogs.filter((blog) => blog.id !== id))
+      dispatch(setMessage('Blog deleted successfully'))
+      setTimeout(() => {
+        dispatch(setMessage(null))
+      }, 5000)
     } catch (exception) {
-      setMessage(`Error: \n ${exception.response.data.error}`)
+      dispatch(setMessage(`Error: \n ${exception.response.data.error}`))
 
       setTimeout(() => {
-        setMessage(null)
+        dispatch(setMessage(null))
       }, 5000)
       console.log(exception.response.data.error)
     }
@@ -128,7 +127,7 @@ const App = () => {
       return null
     }
 
-    return <div className="message">{message}</div>
+    return <div className='message'>{message}</div>
   }
 
   blogs.sort((a, b) => a.likes - b.likes)
@@ -151,10 +150,12 @@ const App = () => {
       <h2>blogs</h2>
       <div>
         {user.name} logged in
-        <button id='logout-button' onClick={logout}>logout</button>
+        <button id='logout-button' onClick={logout}>
+          logout
+        </button>
       </div>
       <Notification />
-      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <Togglable buttonLabel='new blog' ref={blogFormRef}>
         <BlogForm createBlog={createNewBlog} />
       </Togglable>
       {blogs.map((blog) => (
