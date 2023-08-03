@@ -11,10 +11,13 @@ import Blog from './components/Blog'
 import Login from './components/Login'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import userService from './services/users'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
 import UserDetails from './components/UserDetails'
+import { useUsersDispatch } from './context/UsersContext'
+import { fetchAllUsers } from './actions/users'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -22,10 +25,13 @@ const App = () => {
 
   const queryClient = useQueryClient()
 
+
   const blogFormRef = useRef()
 
   const [message, dispatchNotif] = useContext(NotificationContext)
   const [user, dispatchUser] = useContext(UserContext)
+  const dispatchUsers = useUsersDispatch()
+
 
   const changeHander = (event) => {
     switch (event.target.id) {
@@ -88,6 +94,9 @@ const App = () => {
       blogService.setToken(user.token)
       dispatchUser(setUser(user))
     }
+
+    userService.getAllUsers()
+      .then(users => dispatchUsers(fetchAllUsers(users)))
   }, [])
 
   if (resultBlogs.isLoading) return <div>Loading...</div>
@@ -167,6 +176,7 @@ const App = () => {
     return (
       <>
         <Notification />
+        <h3>Blog App</h3>
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
           <BlogForm createBlog={createNewBlog} />
         </Togglable>
@@ -182,19 +192,20 @@ const App = () => {
     )
   }
 
+  const navStyle = {
+    padding: '5px'
+  }
   // console.log(user);
   return (
     <div>
-      <h2>blogs</h2>
       <div>
-        {user.name} logged in
-        <button id='logout-button' onClick={logout}>
-          logout
-        </button>
         <Router>
-          <div style={{
-            padding: '10px',
-          }}><Link to='/users'>Users</Link></div>
+          <Link style= {navStyle} to='/'>blogs</Link>
+          <Link style= {navStyle} to='/users'>Users</Link>
+          {user.name} logged in
+          <button id='logout-button' onClick={logout}>
+          logout
+          </button>
 
           <Routes>
             <Route path='/' element={<BlogListElements />}></Route>
