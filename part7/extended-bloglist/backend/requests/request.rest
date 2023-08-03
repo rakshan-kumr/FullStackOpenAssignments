@@ -1,0 +1,51 @@
+GET http://localhost:3003/api/blogs
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJpdGhlc2hLdW1hciIsImlkIjoiNjQ4NTk5NjVhNDMxODA0ZDE0ZWFlZGFlIiwiaWF0IjoxNjg2NTQyNjYxfQ.84EhC8XoE-B2BAFaBDt8C6IXchFbVPnLotoNV3fZcSA
+
+{
+    "title": "Second Token Middleware blog",
+    "author": "Rakshan",
+    "url": "http://www.mytestblog.com"
+}
+
+###
+DELETE http://localhost:3003/api/blogs/648699e95b84edd0c309c47c
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJpdGhlc2hLdW1hciIsImlkIjoiNjQ4NTk5NjVhNDMxODA0ZDE0ZWFlZGFlIiwiaWF0IjoxNjg2NTQyNjYxfQ.84EhC8XoE-B2BAFaBDt8C6IXchFbVPnLotoNV3fZcSA
+
+
+###
+PUT http://localhost:3003/api/blogs/647d8c49a2590bd8d0bca8e3
+Content-Type: application/json
+
+{
+     "title": "Updated blog",
+    "author": "Update Me",
+    "url": "http://www.myupdateblog.com",
+    "likes": 22
+}
+
+###
+GET http://localhost:3003/api/users
+
+###
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "rakshanKumar",
+    "name" : "Rakshan Kumar",
+    "password": "rakshank"
+}
+
+###
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "rakshanKumar",
+    "password": "rakshank"
+}
