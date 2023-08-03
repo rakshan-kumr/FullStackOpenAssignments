@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef, useContext } from 'react'
 import NotificationContext from './context/NotificationContext'
+import UserContext from './context/UserContext'
 import { setMessage } from './actions/notification'
+import { setUser } from './actions/user'
+
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 import Blog from './components/Blog'
@@ -13,14 +16,13 @@ import Togglable from './components/Togglable'
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
 
   const queryClient = useQueryClient()
 
   const blogFormRef = useRef()
 
-  const [message, dispatch] = useContext(NotificationContext)
+  const [message, dispatchNotif] = useContext(NotificationContext)
+  const [user, dispatchUser] = useContext(UserContext)
 
   const changeHander = (event) => {
     switch (event.target.id) {
@@ -68,11 +70,11 @@ const App = () => {
   })
 
   const notify = (message) => {
-    dispatch(setMessage(
+    dispatchNotif(setMessage(
       message)
     )
     setTimeout(() => {
-      dispatch(setMessage(null))
+      dispatchNotif(setMessage(null))
     }, 5000)
   }
 
@@ -81,7 +83,7 @@ const App = () => {
     if (loggedUser) {
       const user = JSON.parse(loggedUser)
       blogService.setToken(user.token)
-      setUser(user)
+      dispatchUser(setUser(user))
     }
   }, [])
 
@@ -98,7 +100,7 @@ const App = () => {
         password,
       })
 
-      setUser(user)
+      dispatchUser(setUser(user))
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUsername('')
@@ -132,7 +134,7 @@ const App = () => {
 
   const logout = () => {
     window.localStorage.removeItem('loggedInUser')
-    setUser(null)
+    dispatchUser(setUser(null))
   }
 
   const Notification = () => {
