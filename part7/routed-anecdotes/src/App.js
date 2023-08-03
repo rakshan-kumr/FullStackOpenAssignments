@@ -68,7 +68,6 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-
   const content = useField('text')
   const author = useField('text')
   const info = useField('text')
@@ -96,24 +95,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name='content'
-            {...content.props}
-          />
+          <input name='content' {...content.props} />
         </div>
         <div>
           author
-          <input
-            name='author'
-            {...author.props}
-          />
+          <input name='author' {...author.props} />
         </div>
         <div>
           url for more info
-          <input
-            name='info'
-            {...info.props}
-          />
+          <input name='info' {...info.props} />
         </div>
         <button>create</button>
         <button onClick={resetFields}>reset</button>
@@ -184,7 +174,7 @@ const App = () => {
     ? anecdotes.find((anecdote) => anecdote.id === Number(match.params.id))
     : null
   return (
-    <div>
+    <div className='container'>
       <h1>Software anecdotes</h1>
       <Menu />
       {notification && <Notification message={notification} />}
