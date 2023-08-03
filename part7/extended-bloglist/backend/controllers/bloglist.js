@@ -27,8 +27,7 @@ blogRouter.post('/', async (request, response) => {
     user: user.id,
   })
 
-  const result = await blog.save()
-  console.log('logging result', result)
+  const result = await blog.save().then(blog => blog.populate(['user']))
   user.blogs = user.blogs.concat(result._id)
   await user.save()
 
@@ -45,8 +44,7 @@ blogRouter.delete('/:id', async (request, response) => {
     return response.status(401).json({ error: 'token invalid' })
   }
   const result = await Blog.findByIdAndRemove(request.params.id)
-  console.log(typeof result)
-  response.status(204).end()
+  response.status(200).json(result)
 })
 
 blogRouter.put('/:id', async (request, response) => {

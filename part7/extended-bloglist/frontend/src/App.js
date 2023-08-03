@@ -11,18 +11,12 @@ import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
 
 const App = () => {
-  // const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  // const [message, setMessage] = useState(null)
+
 
   const queryClient = useQueryClient()
-
-  const setBlogs = (blog) => {
-    console.log(blog)
-    return
-  }
 
   const blogFormRef = useRef()
 
@@ -48,17 +42,39 @@ const App = () => {
 
   const newBlogutation = useMutation(blogService.create, {
     onSuccess: (newBlog) => {
+      console.log(newBlog)
       const blogs = queryClient.getQueryData('blogs')
       queryClient.setQueryData('blogs', blogs.concat(newBlog))
-      dispatch(setMessage(
-        `A new blog "${newBlog.title}" by ${newBlog.author} added`)
-      )
-      setTimeout(() => {
-        dispatch(setMessage(null))
-      }, 5000)
+      notify(`A new blog "${newBlog.title}" by ${newBlog.author} added`)
     }
   })
 
+  const likeBlogMutation = useMutation(({ id, blogObject }) =>  blogService.update(id, blogObject),
+    {
+      onSuccess: (updatedBlog) => {
+        const blogs = queryClient.getQueryData('blogs')
+        queryClient.setQueryData('blogs',   blogs.map((blog) =>
+          blog.id !== updatedBlog.id ? blog : { ...updatedBlog, user: user }
+        ))
+      }
+    })
+
+  const deleteBlogMutation = useMutation(blogService.deleteBlog, {
+    onSuccess:(deletedBlog) => {
+      const blogs = queryClient.getQueryData('blogs')
+      queryClient.setQueryData('blogs', blogs.filter((blog) => blog.id !== deletedBlog.id))
+      notify('Blog deleted successfully')
+    }
+  })
+
+  const notify = (message) => {
+    dispatch(setMessage(
+      message)
+    )
+    setTimeout(() => {
+      dispatch(setMessage(null))
+    }, 5000)
+  }
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedInUser')
@@ -88,55 +104,28 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      dispatch(setMessage('Wrong credentials'))
-      setTimeout(() => {
-        dispatch(setMessage(null))
-      }, 5000)
+      notify('Wrong credentials')
     }
   }
 
   const createNewBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
-
     try {
-      const returnedBlog = newBlogutation.mutate(blogObject)
-      console.log(returnedBlog, newBlogutation)
-      // const returnedBlog = await blogService.create(blogObject)
-      // setBlogs(blogs.concat({ ...returnedBlog, user: user }))
-
+      newBlogutation.mutate(blogObject)
     } catch (error) {
       console.log(error)
-      dispatch(setMessage('Something went wrong'))
-      setTimeout(() => {
-        dispatch(setMessage(null))
-      }, 5000)
+      notify('Something went wrong')
     }
   }
 
   const updateLike = async (blogObject) => {
-    const returnedBlog = await blogService.update(blogObject.id, blogObject)
-    setBlogs(
-      blogs.map((blog) =>
-        blog.id !== returnedBlog.id ? blog : { ...returnedBlog, user: user }
-      )
-    )
-    return returnedBlog
-  }
+    likeBlogMutation.mutate({ id: blogObject.id, blogObject })  }
 
   const delBlog = async (id) => {
     try {
-      await blogService.deleteBlog(id)
-      setBlogs(blogs.filter((blog) => blog.id !== id))
-      dispatch(setMessage('Blog deleted successfully'))
-      setTimeout(() => {
-        dispatch(setMessage(null))
-      }, 5000)
+      deleteBlogMutation.mutate(id)
     } catch (exception) {
-      dispatch(setMessage(`Error: \n ${exception.response.data.error}`))
-
-      setTimeout(() => {
-        dispatch(setMessage(null))
-      }, 5000)
+      notify(`Error: \n ${exception.response.data.error}`)
       console.log(exception.response.data.error)
     }
   }

@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const Blog = ({ blog, incrementLike, delBlog }) => {
   const [blogDetailVisible, setBlogDetailVisible] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
+
 
   const buttonLabel = blogDetailVisible ? 'hide' : 'view'
   const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'))
@@ -14,8 +14,7 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
 
   const updateLike = async () => {
     try {
-      const likedBlog = await incrementLike({ ...blog, likes: blog.likes + 1 })
-      setLikes(likedBlog.likes)
+      await incrementLike({ ...blog, likes: blog.likes + 1 })
     } catch (error) {
       error
     }
@@ -46,7 +45,7 @@ const Blog = ({ blog, incrementLike, delBlog }) => {
     <div className='blog-detail'>
       <p className='url'>{blog.url}</p>
       <p className='likes'>
-        likes {likes} <button onClick={updateLike} className='like-button'>like</button>
+        likes {blog.likes} <button onClick={updateLike} className='like-button'>like</button>
       </p>
 
       <p className='creator'>{blog.user.name}</p>
