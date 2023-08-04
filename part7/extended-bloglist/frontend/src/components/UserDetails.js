@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useUsers } from '../context/UsersContext'
 
+
 const UserDetails = () => {
   const { id } = useParams()
   const users = useUsers()
