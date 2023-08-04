@@ -8,6 +8,10 @@ const Users = () => {
 
   const users = useUsers()
 
+  if (!users) {
+    return null
+  }
+
   return (
     <>
       <h3>Users</h3>

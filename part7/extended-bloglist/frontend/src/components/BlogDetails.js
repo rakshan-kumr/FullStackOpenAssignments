@@ -37,6 +37,12 @@ const BlogDetails = () => {
       <a href={blog.url}>{blog.url}</a>
       <div>{blog.likes} likes <button onClick={() => updateLike({ ...blog, likes: blog.likes + 1 })}>like</button></div>
       <p>added by {blog.user.name}</p>
+      <h4>Comments</h4>
+      <ul>
+        {blog.comments.length ? (
+          blog.comments.map((comment) => <li key={comment._id}>{comment.comment}</li>)
+        ) : <p>No comments</p>}
+      </ul>
     </>
 
 

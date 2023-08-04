@@ -49,3 +49,11 @@ Content-Type: application/json
     "username": "rakshanKumar",
     "password": "rakshank"
 }
+
+###
+POST http://localhost:3003/api/blogs/64cc85c55d97bd7458979cbe/comments
+Content-Type: application/json
+
+{
+    "comment": "first comment using REST"
+}
