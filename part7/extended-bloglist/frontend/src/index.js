@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { NotificationContextProvider } from './context/NotificationContext'
 import { UserContextProvider } from './context/UserContext'
 import { UsersContextProvider } from './context/UsersContext'
@@ -19,6 +18,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </NotificationContextProvider>
       </UserContextProvider>
     </UsersContextProvider>
-    <ReactQueryDevtools />
   </QueryClientProvider>
 )

@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import blogService from '../services/blogs'
 import { useUser } from '../context/UserContext'
 import './BlogDetails.css'
+import { Button, Form } from 'react-bootstrap'
 
 const BlogDetails = () => {
   const { id } = useParams()
@@ -78,16 +79,16 @@ const BlogDetails = () => {
       </u>
       <div>
         {blog.likes} likes{' '}
-        <button onClick={() => updateLike({ ...blog, likes: blog.likes + 1 })}>
+        <Button size='sm' onClick={() => updateLike({ ...blog, likes: blog.likes + 1 })}>
           like
-        </button>
+        </Button>
       </div>
       <p>added by {blog.user.name}</p>
       <h4>Comments</h4>
-      <form onSubmit={addComment}>
-        <input type='text' name='comment' />
-        <button type='submit'>add comment</button>
-      </form>
+      <Form className='d-flex m-1' onSubmit={addComment}>
+        <Form.Control size='sm' type='text' name='comment' />
+        <Button className='px-2' size='sm' type='submit'>add</Button>
+      </Form>
       <ul>
         {blog.comments &&
           blog.comments.map((comment) => (
