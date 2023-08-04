@@ -1,24 +1,23 @@
-describe('Blog app', function() {
-
-  beforeEach(function() {
+describe('Blog app', function () {
+  beforeEach(function () {
     cy.viewport(500, 500)
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
     const user = {
       name: 'Anil Kumar',
       username: 'anilkumar',
-      password: 'anilk'
+      password: 'anilk',
     }
     cy.request('POST', 'http://localhost:3003/api/users/', user)
     const user2 = {
       name: 'Second User',
       username: 'seconduser',
-      password: 'second'
+      password: 'second',
     }
     cy.request('POST', 'http://localhost:3003/api/users/', user2)
     cy.visit('http://localhost:3000')
   })
 
-  it('Login form is shown', function() {
+  it('Login form is shown', function () {
     // ...
     cy.contains('Login to the Application')
     cy.get('#username')
@@ -26,8 +25,8 @@ describe('Blog app', function() {
     cy.get('button').contains('login')
   })
 
-  describe('Login',function() {
-    it('succeeds with correct credentials', function() {
+  describe('Login', function () {
+    it('succeeds with correct credentials', function () {
       // ...
       cy.get('#username').type('anilkumar')
       cy.get('#password').type('anilk')
@@ -36,24 +35,25 @@ describe('Blog app', function() {
       cy.contains('Anil Kumar logged in')
     })
 
-    it('fails with wrong credentials', function() {
+    it('fails with wrong credentials', function () {
       // ...
       cy.get('#username').type('mluukkai')
       cy.get('#password').type('wrong')
       cy.get('#login-button').click()
 
-      cy.get('.message').should('contain', 'Wrong credentials')
+      cy.get('.message')
+        .should('contain', 'Wrong credentials')
         .and('have.css', 'color', 'rgb(128, 128, 128)') // checking for grey as the error color of red is not implemented.
     })
   })
 
-  describe('When logged in', function() {
-    beforeEach(function() {
+  describe('When logged in', function () {
+    beforeEach(function () {
       // log in user here
       cy.login({ username: 'anilkumar', password: 'anilk' })
     })
 
-    it('A blog can be created', function() {
+    it('A blog can be created', function () {
       // ...
       cy.contains('new blog').click()
       cy.get('#title').type('first Title')
@@ -64,11 +64,11 @@ describe('Blog app', function() {
       cy.contains('first Title first Author')
     })
 
-    it('User can like a blog', function() {
+    it('User can like a blog', function () {
       cy.createBlog({
         title: 'First Title',
         author: 'First Author',
-        url: 'firsturl.com'
+        url: 'firsturl.com',
       })
       cy.get('.view-hide-button').click()
       cy.get('.likes').contains('likes 0')
@@ -76,11 +76,11 @@ describe('Blog app', function() {
       cy.get('.likes').contains('likes 1')
     })
 
-    it('User can delete the blog', function() {
+    it('User can delete the blog', function () {
       cy.createBlog({
         title: 'First Title',
         author: 'First Author',
-        url: 'firsturl.com'
+        url: 'firsturl.com',
       })
       cy.get('.view-hide-button').click()
       cy.get('.blog-element')
@@ -88,40 +88,41 @@ describe('Blog app', function() {
       cy.get('.blog-element').should('not.exist')
     })
 
-    it('only creator can see delete button of the blog', function() {
+    it('only creator can see delete button of the blog', function () {
       cy.createBlog({
         title: 'First Title',
         author: 'First Author',
-        url: 'firsturl.com'
+        url: 'firsturl.com',
       })
       cy.get('#logout-button').click()
       cy.login({ username: 'seconduser', password: 'second' })
       cy.createBlog({
         title: 'Second Title',
         author: 'Second Author',
-        url: 'secondurl.com'
+        url: 'secondurl.com',
       })
       cy.get('.view-hide-button').click({
-        multiple: true
+        multiple: true,
       })
-      cy.get('.blog-element:first').find('.delete-blog-button').should('not.exist')
+      cy.get('.blog-element:first')
+        .find('.delete-blog-button')
+        .should('not.exist')
       cy.get('.blog-element:last').find('.delete-blog-button')
-
     })
 
-    it.only('blog is ordered according to likes', function() {
+    it.only('blog is ordered according to likes', function () {
       cy.createBlog({
         title: 'First Title',
         author: 'First Author',
-        url: 'firsturl.com'
+        url: 'firsturl.com',
       })
       cy.createBlog({
         title: 'Second Title',
         author: 'Second Author',
-        url: 'secondurl.com'
+        url: 'secondurl.com',
       })
       cy.get('.view-hide-button').click({
-        multiple: true
+        multiple: true,
       })
 
       cy.contains('First Title First Author').parent().as('firstBlog')
@@ -134,8 +135,12 @@ describe('Blog app', function() {
       cy.get('@secondBlog').find('.like-button').click()
       cy.get('@secondBlog').find('.likes').contains('likes 1')
 
-      cy.get('.blog-element').eq(0).should('contain', 'Second Title Second Author')
-      cy.get('.blog-element').eq(1).should('contain', 'First Title First Author')
+      cy.get('.blog-element')
+        .eq(0)
+        .should('contain', 'Second Title Second Author')
+      cy.get('.blog-element')
+        .eq(1)
+        .should('contain', 'First Title First Author')
     })
   })
 })

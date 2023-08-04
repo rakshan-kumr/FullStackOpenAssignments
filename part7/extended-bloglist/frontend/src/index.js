@@ -21,6 +21,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </UsersContextProvider>
     <ReactQueryDevtools />
   </QueryClientProvider>
-
-
 )

@@ -65,21 +65,17 @@ test('Blog can be deleted', async () => {
   const blogsAtStart = response.body
   const blogToDelete = blogsAtStart[0]
 
-  await api
-    .delete(`/api/blogs/${blogToDelete.id}`)
-    .expect(204)
+  await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
 
   const secondResponse = await api.get('/api/blogs')
   const blogsAtEnd = secondResponse.body
   expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
-
 })
 
 test('Blog can be edited', async () => {
-
   const response = await api.get('/api/blogs')
   const blogsAtStart = response.body
-  const blogToUpdate= blogsAtStart[0]
+  const blogToUpdate = blogsAtStart[0]
 
   const updatedBlog = {
     title: 'Update blog',
@@ -94,7 +90,6 @@ test('Blog can be edited', async () => {
 
   expect(blogsAfterUpdate.body).toContainEqual(res.body)
 })
-
 
 afterAll(async () => {
   await mongoose.connection.close()

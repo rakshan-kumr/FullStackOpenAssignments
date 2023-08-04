@@ -27,21 +27,22 @@ export const useNotifier = () => {
   return (message) => {
     dispatch({
       type: 'NOTIFY',
-      payload: message
+      payload: message,
     })
     setTimeout(() => {
       dispatch({
         type: 'NOTIFY',
-        payload: null
+        payload: null,
       })
     }, 5000)
-  }}
+  }
+}
 
 export const NotificationContextProvider = (props) => {
   const [message, messageDispatch] = useReducer(messageReducer, null)
 
   return (
-    <NotificationContext.Provider value={[message, messageDispatch] }>
+    <NotificationContext.Provider value={[message, messageDispatch]}>
       {props.children}
     </NotificationContext.Provider>
   )

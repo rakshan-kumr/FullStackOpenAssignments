@@ -8,9 +8,7 @@ test('<BlogForm /> updates parent state and calls onSubmit', async () => {
   const createBlog = jest.fn()
   const user = userEvent.setup()
 
-  const container = render(
-    <BlogForm createBlog={createBlog}/>
-  ).container
+  const container = render(<BlogForm createBlog={createBlog} />).container
 
   const title = container.querySelector('#title')
   const author = container.querySelector('#author')
@@ -25,5 +23,4 @@ test('<BlogForm /> updates parent state and calls onSubmit', async () => {
   expect(createBlog.mock.calls[0][0].title).toBe('title of the blog')
   expect(createBlog.mock.calls[0][0].author).toBe('author of the blog')
   expect(createBlog.mock.calls[0][0].url).toBe('url of the blog')
-
 })

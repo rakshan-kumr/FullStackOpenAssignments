@@ -12,10 +12,9 @@ const blogSchema = new mongoose.Schema({
   comments: [
     {
       comment: String,
-    }
-  ]
-}
-)
+    },
+  ],
+})
 
 blogSchema.set('toJSON', {
   transform: (document, returnedObject) => {

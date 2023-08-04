@@ -34,22 +34,21 @@ const App = () => {
 
   const changeHander = (event) => {
     switch (event.target.id) {
-    case 'username':
-      setUsername(event.target.value)
-      break
-    case 'password':
-      setPassword(event.target.value)
-      break
+      case 'username':
+        setUsername(event.target.value)
+        break
+      case 'password':
+        setPassword(event.target.value)
+        break
 
-    default:
-      break
+      default:
+        break
     }
   }
 
   const resultBlogs = useQuery(['blogs'], () => {
     return blogService.getAll()
-  }
-  )
+  })
 
   const newBlogutation = useMutation(blogService.create, {
     onSuccess: (newBlog) => {
@@ -57,7 +56,7 @@ const App = () => {
       const blogs = queryClient.getQueryData(['blogs'])
       queryClient.setQueryData(['blogs'], blogs.concat(newBlog))
       notify(`A new blog "${newBlog.title}" by ${newBlog.author} added`)
-    }
+    },
   })
 
   useEffect(() => {
@@ -68,11 +67,12 @@ const App = () => {
       dispatchUser(setUser(user))
     }
 
-    userService.getAllUsers()
-      .then(users => dispatchUsers(fetchAllUsers(users)))
+    userService
+      .getAllUsers()
+      .then((users) => dispatchUsers(fetchAllUsers(users)))
   }, [])
 
-  if (resultBlogs.isLoading)  return <div>Loading...</div>
+  if (resultBlogs.isLoading) return <div>Loading...</div>
   if (resultBlogs.isError) return <div>Something went wrong...</div>
 
   const blogs = resultBlogs.data
@@ -142,27 +142,34 @@ const App = () => {
           <BlogForm createBlog={createNewBlog} />
         </Togglable>
         {blogs.map((blog) => (
-          <div key={blog.id}><Link to={`/blogs/${blog.id}`}>{blog.title} - {blog.author}</Link></div>
+          <div key={blog.id}>
+            <Link to={`/blogs/${blog.id}`}>
+              {blog.title} - {blog.author}
+            </Link>
+          </div>
         ))}
       </>
     )
   }
 
   const navStyle = {
-    padding: '5px'
+    padding: '5px',
   }
 
   return (
     <div>
       <div>
         <Router>
-          <Link style= {navStyle} to='/'>blogs</Link>
-          <Link style= {navStyle} to='/users'>Users</Link>
+          <Link style={navStyle} to='/'>
+            blogs
+          </Link>
+          <Link style={navStyle} to='/users'>
+            Users
+          </Link>
           {user.name} logged in
           <button id='logout-button' onClick={logout}>
-          logout
+            logout
           </button>
-
           <Routes>
             <Route path='/' element={<BlogListElements />}></Route>
             <Route path='/users' element={<Users />}></Route>
@@ -171,7 +178,6 @@ const App = () => {
           </Routes>
         </Router>
       </div>
-
     </div>
   )
 }
