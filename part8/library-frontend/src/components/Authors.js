@@ -3,12 +3,10 @@ import { ALL_AUTHORS } from '../queries'
 
 const Authors = () => {
   const result = useQuery(ALL_AUTHORS)
-  console.log(result.data)
 
   if (result.loading) return <div>Loading..</div>
 
   const authors = result.data.allAuthors
-  console.log(authors)
 
   return (
     <div>
