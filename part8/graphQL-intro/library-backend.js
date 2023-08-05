@@ -1,6 +1,22 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
 const { v1: uuid } = require('uuid')
+const mongoose = require('mongoose')
+require('dotenv').config()
+const Book = require('./models/book')
+const Author = require('./models/author')
+const { GraphQLError } = require('graphql')
+
+const MONGODB_URI = process.env.MONGODB_URI
+console.log('connecting to', MONGODB_URI)
+mongoose
+  .connect(MONGODB_URI)
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.log('error connection to MongoDB:', error.message)
+  })
 
 let authors = [
   {
@@ -27,20 +43,6 @@ let authors = [
     id: 'afa5b6f3-344d-11e9-a414-719c6709cf3e',
   },
 ]
-
-/*
- * Suomi:
- * Saattaisi olla järkevämpää assosioida kirja ja sen tekijä tallettamalla kirjan yhteyteen tekijän nimen sijaan tekijän id
- * Yksinkertaisuuden vuoksi tallennamme kuitenkin kirjan yhteyteen tekijän nimen
- *
- * English:
- * It might make more sense to associate a book with its author by storing the author's id in the context of the book instead of the author's name
- * However, for simplicity, we will store the author's name in connection with the book
- *
- * Spanish:
- * Podría tener más sentido asociar un libro con su autor almacenando la id del autor en el contexto del libro en lugar del nombre del autor
- * Sin embargo, por simplicidad, almacenaremos el nombre del autor en conección con el libro
- */
 
 let books = [
   {
@@ -102,7 +104,7 @@ const typeDefs = `
   type Book {
     title: String!
     published: Int!
-    author: String!
+    author: Author!
     id: ID!
     genres: [String!]
   }
@@ -172,12 +174,34 @@ const resolvers = {
     },
   },
   Mutation: {
-    addBook: (root, args) => {
-      const book = { ...args, id: uuid() }
+    addBook: async (root, args) => {
+      let author = await Author.findOne({ name: args.author })
+      const foundBook = await Book.findOne({ title: args.title })
 
-      if (!authors.find((author) => author.name === book.author))
-        authors = authors.concat({ name: book.author, id: uuid() })
-      books = books.concat(book)
+      if (foundBook) {
+        throw new GraphQLError('Book already exists', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        })
+      }
+
+      if (!author) {
+        try {
+          author = new Author({ name: args.author })
+          await author.save()
+        } catch (error) {
+          throw new GraphQLError('Something went wrong', {
+            extensions: {
+              code: 'BAD_USER_INPUT',
+              error,
+            },
+          })
+        }
+      }
+
+      const book = new Book({ ...args, author })
+      await book.save()
       return book
     },
     editAuthor: (root, args) => {
