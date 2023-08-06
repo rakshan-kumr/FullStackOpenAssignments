@@ -3,7 +3,7 @@ import { ALL_AUTHORS, UPDATE_BIRTHYEAR } from '../queries'
 import { useState } from 'react'
 import Select from 'react-select'
 
-const Authors = () => {
+const Authors = ({ token }) => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
 
@@ -55,19 +55,23 @@ const Authors = () => {
           ))}
         </tbody>
       </table>
-      <h3>Set Birth year</h3>
-      <form onSubmit={updateBirthYear}>
-        <Select defaultValue={name} onChange={setName} options={options} />
-        <div>
-          born
-          <input
-            type='number'
-            value={born}
-            onChange={({ target }) => setBorn(Number(target.value))}
-          />
-        </div>
-        <button type='submit'>update author</button>
-      </form>
+      {token ? (
+        <>
+          <h3>Set Birth year</h3>
+          <form onSubmit={updateBirthYear}>
+            <Select defaultValue={name} onChange={setName} options={options} />
+            <div>
+              born
+              <input
+                type='number'
+                value={born}
+                onChange={({ target }) => setBorn(Number(target.value))}
+              />
+            </div>
+            <button type='submit'>update author</button>
+          </form>
+        </>
+      ) : null}
     </div>
   )
 }
