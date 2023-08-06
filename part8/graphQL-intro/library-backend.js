@@ -44,58 +44,6 @@ let authors = [
   },
 ]
 
-let books = [
-  {
-    title: 'Clean Code',
-    published: 2008,
-    author: 'Robert Martin',
-    id: 'afa5b6f4-344d-11e9-a414-719c6709cf3e',
-    genres: ['refactoring'],
-  },
-  {
-    title: 'Agile software development',
-    published: 2002,
-    author: 'Robert Martin',
-    id: 'afa5b6f5-344d-11e9-a414-719c6709cf3e',
-    genres: ['agile', 'patterns', 'design'],
-  },
-  {
-    title: 'Refactoring, edition 2',
-    published: 2018,
-    author: 'Martin Fowler',
-    id: 'afa5de00-344d-11e9-a414-719c6709cf3e',
-    genres: ['refactoring'],
-  },
-  {
-    title: 'Refactoring to patterns',
-    published: 2008,
-    author: 'Joshua Kerievsky',
-    id: 'afa5de01-344d-11e9-a414-719c6709cf3e',
-    genres: ['refactoring', 'patterns'],
-  },
-  {
-    title: 'Practical Object-Oriented Design, An Agile Primer Using Ruby',
-    published: 2012,
-    author: 'Sandi Metz',
-    id: 'afa5de02-344d-11e9-a414-719c6709cf3e',
-    genres: ['refactoring', 'design'],
-  },
-  {
-    title: 'Crime and punishment',
-    published: 1866,
-    author: 'Fyodor Dostoevsky',
-    id: 'afa5de03-344d-11e9-a414-719c6709cf3e',
-    genres: ['classic', 'crime'],
-  },
-  {
-    title: 'The Demon ',
-    published: 1872,
-    author: 'Fyodor Dostoevsky',
-    id: 'afa5de04-344d-11e9-a414-719c6709cf3e',
-    genres: ['classic', 'revolution'],
-  },
-]
-
 /*
   you can remove the placeholder query once your first own has been implemented 
 */
@@ -148,29 +96,21 @@ const typeDefs = `
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (root, args) => {
-      if (args.author && args.genre)
-        return books.filter(
-          (book) =>
-            book.author === args.author && book.genres.includes(args.genre)
-        )
-      if (args.author)
-        return books.filter((book) => book.author === args.author)
-      if (args.genre)
+    bookCount: async () => Book.collection.countDocuments(),
+    authorCount: async () => Author.collection.countDocuments(),
+    allBooks: async (root, args) => {
+      if (args.genre) {
+        const books = await Book.find({
+          genres: { $all: [args.genre] },
+        }).populate('author')
         return books.filter((book) => book.genres.includes(args.genre))
+      }
+      const books = await Book.find({}).populate('author')
       return books
     },
-    allAuthors: () => {
-      const authorObj = authors.map((author) => {
-        return {
-          name: author.name,
-          born: author.born,
-          bookCount: books.filter((book) => book.author === author.name).length,
-        }
-      })
-      return authorObj
+    allAuthors: async () => {
+      const authors = await Author.find({})
+      return authors
     },
   },
   Mutation: {
@@ -185,7 +125,6 @@ const resolvers = {
           },
         })
       }
-
       if (!author) {
         try {
           author = new Author({ name: args.author })
@@ -204,15 +143,17 @@ const resolvers = {
       await book.save()
       return book
     },
-    editAuthor: (root, args) => {
-      const author = authors.find((author) => author.name === args.name)
-      if (!author) return null
-
-      const updatedAuthor = { ...author, born: args.setBornTo }
-      authors = authors.map((author) =>
-        author.name === args.name ? updatedAuthor : author
+    editAuthor: async (root, args) => {
+      const author = await Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        {
+          new: true,
+          upsert: false,
+        }
       )
-      return updatedAuthor
+
+      return author
     },
   },
 }
