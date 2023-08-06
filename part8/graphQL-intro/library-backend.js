@@ -18,32 +18,6 @@ mongoose
     console.log('error connection to MongoDB:', error.message)
   })
 
-let authors = [
-  {
-    name: 'Robert Martin',
-    id: 'afa51ab0-344d-11e9-a414-719c6709cf3e',
-    born: 1952,
-  },
-  {
-    name: 'Martin Fowler',
-    id: 'afa5b6f0-344d-11e9-a414-719c6709cf3e',
-    born: 1963,
-  },
-  {
-    name: 'Fyodor Dostoevsky',
-    id: 'afa5b6f1-344d-11e9-a414-719c6709cf3e',
-    born: 1821,
-  },
-  {
-    name: 'Joshua Kerievsky', // birthyear not known
-    id: 'afa5b6f2-344d-11e9-a414-719c6709cf3e',
-  },
-  {
-    name: 'Sandi Metz', // birthyear not known
-    id: 'afa5b6f3-344d-11e9-a414-719c6709cf3e',
-  },
-]
-
 /*
   you can remove the placeholder query once your first own has been implemented 
 */
@@ -125,6 +99,13 @@ const resolvers = {
           },
         })
       }
+      if (args.title.length <= 5 || args.author.length <= 5) {
+        throw new GraphQLError('Book title or author name too short', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        })
+      }
       if (!author) {
         try {
           author = new Author({ name: args.author })
@@ -132,7 +113,7 @@ const resolvers = {
         } catch (error) {
           throw new GraphQLError('Something went wrong', {
             extensions: {
-              code: 'BAD_USER_INPUT',
+              code: 'INTERNAL_SERVER_ERROR',
               error,
             },
           })
@@ -144,6 +125,14 @@ const resolvers = {
       return book
     },
     editAuthor: async (root, args) => {
+      if (args.setBornTo.toString().length != 4) {
+        throw new GraphQLError('Please enter valid year', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        })
+      }
+
       const author = await Author.findOneAndUpdate(
         { name: args.name },
         { born: args.setBornTo },
@@ -152,7 +141,13 @@ const resolvers = {
           upsert: false,
         }
       )
-
+      if (!author) {
+        throw new GraphQLError('Author not found', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+          },
+        })
+      }
       return author
     },
   },
