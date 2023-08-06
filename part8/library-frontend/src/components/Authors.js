@@ -6,7 +6,9 @@ import Select from 'react-select'
 const Authors = () => {
   const [name, setName] = useState('')
   const [born, setBorn] = useState('')
+
   const result = useQuery(ALL_AUTHORS)
+
   const [updateAuthor] = useMutation(UPDATE_BIRTHYEAR, {
     refetchQueries: [{ query: ALL_AUTHORS }],
   })

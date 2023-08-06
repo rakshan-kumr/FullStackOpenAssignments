@@ -1,12 +1,9 @@
-import { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import { BrowserRouter as Router, Link, Routes, Route } from 'react-router-dom'
 
 const App = () => {
-  const [page, setPage] = useState('authors')
-
   return (
     <div>
       <Router>
