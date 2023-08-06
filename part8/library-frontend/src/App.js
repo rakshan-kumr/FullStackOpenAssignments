@@ -11,6 +11,7 @@ import {
 } from 'react-router-dom'
 import { useState } from 'react'
 import { useApolloClient } from '@apollo/client'
+import Recommendations from './components/Recommendations'
 
 const App = () => {
   const [token, setToken] = useState(null)
@@ -37,6 +38,9 @@ const App = () => {
             <Link to='/addbook'>
               <button>Add book</button>
             </Link>
+            <Link to='/recommendations'>
+              <button>recommend</button>
+            </Link>
             <button onClick={logout}>logout</button>
           </>
         ) : (
@@ -51,6 +55,10 @@ const App = () => {
           <Route
             path='/addbook'
             element={token ? <NewBook /> : <Navigate to='/login' />}
+          />
+          <Route
+            path='/recommendations'
+            element={token ? <Recommendations /> : <Navigate to='/login' />}
           />
           <Route path='/login' element={<LoginForm setToken={setToken} />} />
         </Routes>
