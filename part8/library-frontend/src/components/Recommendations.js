@@ -7,7 +7,6 @@ const Recommendations = () => {
   const booksQuery = useQuery(ALL_BOOKS)
 
   if (myProfile.loading || booksQuery.loading) return <div>Loading...</div>
-  console.log(booksQuery.data, myProfile.data)
   const books = booksQuery.data.allBooks.filter((book) =>
     book.genres.includes(myProfile.data.me.favoriteGenre)
   )
