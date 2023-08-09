@@ -23,13 +23,13 @@ const resolvers = {
     },
     allAuthors: async () => {
       const authors = await Author.find({})
+      const books = await Book.find({}).populate('author')
       const authorsNew = authors.map((author) => {
         return {
           name: author.name,
           born: author.born,
-          bookCount: Book.collection.countDocuments({
-            author: author._id,
-          }),
+          bookCount: books.filter((book) => book.author.id === author.id)
+            .length,
         }
       })
       return authorsNew
