@@ -10,14 +10,19 @@ interface Result {
   average: number;
 }
 
-const parseArguments = (args: string[]): any => {
+interface ValuesAndTarget {
+  values: number[];
+  target: number;
+}
+
+const parseArguments = (args: string[]): ValuesAndTarget => {
   //   let arr = args.map((arg) => Number(arg));
   if (args.length <= 2)
     throw new Error(
       'Not enough arguments. Please enter exercise hour values to proceed.'
     );
-  let argValues = args.slice(2);
-  let nanArgs = argValues.filter((arg) => isNotNumber(arg));
+  const argValues = args.slice(2);
+  const nanArgs = argValues.filter((arg) => isNotNumber(arg));
 
   if (nanArgs.length > 0)
     throw new Error('Arguments not valid! Only numbers are allowed.');
@@ -30,15 +35,15 @@ const parseArguments = (args: string[]): any => {
 };
 
 const calculateExercises = (hours: number[], target: number): Result => {
-  let periodLength = hours.length;
-  let trainingDays = hours.filter((hour) => hour != 0).length;
-  let targetMetDays = hours.filter((hour) => hour >= target).length;
-  let success = targetMetDays === periodLength;
-  let successRate = targetMetDays / periodLength;
+  const periodLength = hours.length;
+  const trainingDays = hours.filter((hour) => hour != 0).length;
+  const targetMetDays = hours.filter((hour) => hour >= target).length;
+  const success = targetMetDays === periodLength;
+  const successRate = targetMetDays / periodLength;
   //   console.log('Success Rate:', successRate);
   //   console.log('TP:', targetMetDays, periodLength);
-  let rating = successRate < 0.34 ? 1 : successRate < 0.67 ? 2 : 3;
-  let result = {
+  const rating = successRate < 0.34 ? 1 : successRate < 0.67 ? 2 : 3;
+  const result = {
     periodLength,
     trainingDays,
     success,
@@ -57,7 +62,7 @@ const calculateExercises = (hours: number[], target: number): Result => {
 
 // console.log(process.argv);
 try {
-  let { values, target } = parseArguments(process.argv);
+  const { values, target } = parseArguments(process.argv);
   console.log(calculateExercises(values, target));
 } catch (error: unknown) {
   let errorMessage = 'Error:  ';

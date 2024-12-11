@@ -1,5 +1,5 @@
 export const calculateBmi = (height: number, weight: number): string => {
-  let bmi = weight / Math.pow(height / 100, 2);
+  const bmi = weight / Math.pow(height / 100, 2);
   return bmi < 16
     ? 'Underweight (Severe thinness)'
     : bmi < 17
