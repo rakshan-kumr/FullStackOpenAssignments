@@ -1,4 +1,4 @@
-const calculateBmi = (height: number, weight: number): string => {
+export const calculateBmi = (height: number, weight: number): string => {
   let bmi = weight / Math.pow(height / 100, 2);
   return bmi < 16
     ? 'Underweight (Severe thinness)'
@@ -17,4 +17,8 @@ const calculateBmi = (height: number, weight: number): string => {
     : 'Obese (Class III)';
 };
 
+// console.log(require.main);
+
+// if (require.main === module) {
 console.log(calculateBmi(Number(process.argv[2]), Number(process.argv[3])));
+// }

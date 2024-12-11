@@ -1,13 +1,29 @@
 import express from 'express';
+import { calculateBmi } from './bmiCalculator';
 
 const app = express();
 
-app.get('/hello', (_res, req) => {
-  req.send('Hello Full Stack!');
+app.get('/hello', (_req, res) => {
+  res.send('Hello Full Stack!');
 });
 
-const PORT = 3001;
+app.get('/bmi', (req, res) => {
+  let weight = Number(req.query.weight);
+  let height = Number(req.query.height);
 
+  if (isNaN(weight) || isNaN(height)) {
+    res.status(400).json({
+      error: 'malformatted parameters',
+    });
+  }
+  res.send({
+    weight,
+    height,
+    bmi: calculateBmi(Number(height), Number(weight)),
+  });
+});
+
+const PORT = 3003;
 app.listen(PORT, () => {
   console.log(`Server running at port ${PORT}`);
 });
